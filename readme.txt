@@ -8,7 +8,7 @@ docker exec -ti -w /opt/bitnami/kafka/bin kafka-broker-1 sh
 
 Step 3: Create a topic to store your events
 -------------------------------------------
-kafka-topics.sh --create --topic topic-1 --bootstrap-server localhost:9192
+kafka-topics.sh --create --topic topic-1 --partitions 3 --bootstrap-server localhost:9192
 
 Take note of the --bootstrap-server flag. 
 Because we're connecting to Kafka inside the container, we use broker:9192 for the host:port. 
@@ -22,11 +22,15 @@ kafka-console-producer.sh --topic topic-1 --bootstrap-server localhost:9192
 >This is my first event
 >This is my second event
 
+kafka-console-producer.sh --topic topic-1 --bootstrap-server localhost:9192 --property "parse.key=true" --property "key.separator=:"
+>key1:This is my first event
+>key2:This is my second event
+
 You can stop the producer client with Ctrl-C at any time.
 
 Step 5: Read the events
 -----------------------
-kafka-console-consumer.sh --topic topic-1 --from-beginning --bootstrap-server localhost:9192
+kafka-console-consumer.sh --topic topic-1 --group group-1 --from-beginning --bootstrap-server localhost:9192
 
 You can stop the consumer client with Ctrl-C at any time.
 
