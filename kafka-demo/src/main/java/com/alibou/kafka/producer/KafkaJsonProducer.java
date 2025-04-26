@@ -18,7 +18,7 @@ public class KafkaJsonProducer {
 
         Message<Student> message = MessageBuilder
                 .withPayload(student)
-                .setHeader(KafkaHeaders.TOPIC, "alibou")
+                .setHeader(KafkaHeaders.TOPIC, "alibouJson")
                 .build();
 
         kafkaTemplate.send(message);

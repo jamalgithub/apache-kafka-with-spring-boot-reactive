@@ -59,8 +59,7 @@ cd apache-kafka-with-spring-boot-reactive
 Apache Kafka is a distributed, fault-tolerant, and highly scalable message broker and stream processing platform. It was originally developed by LinkedIn and later open-sourced as an Apache Software Foundation project. Kafka is designed to handle large volumes of data streams in a real-time and fault-tolerant manner.
 
 Key Components of Kafka:
-Producer: An application that publishes messages to Kafka topics.
-
+- **Producer**: An application that publishes messages to Kafka topics.
 - **Consumer**: An application that subscribes to topics and processes the published messages.
 - **Broker**: Kafka brokers form the core of the Kafka cluster, storing and managing the streams of records.
 - **Topic**: A category or feed name to which records are published. Topics in Kafka are used to categorize messages.

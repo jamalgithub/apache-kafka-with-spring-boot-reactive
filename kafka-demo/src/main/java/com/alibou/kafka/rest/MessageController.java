@@ -19,17 +19,13 @@ public class MessageController {
     private final KafkaJsonProducer kafkaJsonProducer;
 
     @PostMapping
-    public ResponseEntity<String> sendMessage(
-            @RequestBody String message
-    ) {
+    public ResponseEntity<String> sendMessage(@RequestBody String message) {
         kafkaProducer.sendMessage(message);
         return ResponseEntity.ok("Message queued successfully");
     }
 
     @PostMapping("/json")
-    public ResponseEntity<String> sendJsonMessage(
-            @RequestBody Student message
-    ) {
+    public ResponseEntity<String> sendJsonMessage(@RequestBody Student message) {
         kafkaJsonProducer.sendMessage(message);
         return ResponseEntity.ok("Message queued successfully as JSON");
     }

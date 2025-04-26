@@ -14,4 +14,10 @@ public class KafkaTopicConfig {
                 .name("alibou")
                 .build();
     }
+    @Bean
+    public NewTopic alibouTopicJson() {
+        return TopicBuilder
+                .name("alibouJson")
+                .build();
+    }
 }

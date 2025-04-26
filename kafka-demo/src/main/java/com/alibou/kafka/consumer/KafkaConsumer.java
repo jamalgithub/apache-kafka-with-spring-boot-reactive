@@ -11,13 +11,13 @@ import static java.lang.String.format;
 @Slf4j
 public class KafkaConsumer {
 
-    // @KafkaListener(topics = "alibou", groupId = "myGroup")
+    @KafkaListener(topics = "alibou", groupId = "myGroup")
     public void consumeMsg(String msg) {
         log.info(format("Consuming the message from alibou Topic:: %s", msg));
     }
 
-    @KafkaListener(topics = "alibou", groupId = "myGroup")
+    @KafkaListener(topics = "alibouJson", groupId = "myGroup")
     public void consumeJsonMsg(Student student) {
-        log.info(format("Consuming the message from alibou Topic:: %s", student.toString()));
+        log.info(format("Consuming the message from alibouJson Topic:: %s", student.toString()));
     }
 }
