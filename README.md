@@ -31,7 +31,41 @@ This is a sample Spring Boot project that demonstrates the integration of Kafka 
 
 ### Running Kafka
 
-Ensure that Kafka is installed and running locally. You can download Kafka from the [official Apache Kafka website](https://kafka.apache.org/).
+You can run Kafka in two ways:
+
+#### Option 1: Using Docker Compose (Recommended)
+
+This project includes a `docker-compose.yml` file that sets up a complete Kafka environment with:
+- 1 Zookeeper instance
+- 3 Kafka brokers (forming a cluster)
+- Kafka UI for monitoring and management
+
+To start the Kafka environment:
+
+```bash
+# Start all services
+docker-compose up -d
+
+# To check the status of the services
+docker-compose ps
+
+# To view logs
+docker-compose logs -f
+```
+
+The Kafka UI will be available at http://localhost:8080, where you can:
+- Monitor topics, partitions, and messages
+- Create new topics
+- View consumer groups and their offsets
+
+Kafka brokers will be accessible at:
+- Broker 1: localhost:9193
+- Broker 2: localhost:9293
+- Broker 3: localhost:9393
+
+#### Option 2: Manual Installation
+
+Alternatively, you can install Kafka manually. Download Kafka from the [official Apache Kafka website](https://kafka.apache.org/).
 
 Start a ZooKeeper server (required by Kafka):
 
@@ -124,3 +158,58 @@ To showcase the functionality of the application, I have developed two distinct 
 2. **Consumer Project:**
    The consumer project complements the aforementioned producer by retrieving messages from the Kafka topic. The retrieved messages are then persisted into a DynamoDB database. This dual-project configuration not only demonstrates the integration of Spring Boot Reactive with Kafka for real-time data processing but also showcases the seamless storage of this data in a DynamoDB database, emphasizing end-to-end functionality within the application.
 
+## Running the Application
+
+### Prerequisites
+
+1. Start the Kafka environment using Docker Compose as described in the [Running Kafka](#running-kafka) section.
+2. Make sure the Kafka UI is accessible at http://localhost:8080 to verify that the Kafka cluster is running properly.
+
+### Configuration
+
+Both the producer and consumer applications are configured to connect to the Kafka brokers. The configuration is in the respective `application.yml` files:
+
+#### Producer Configuration
+
+The producer is configured to connect to the first Kafka broker (localhost:9193) and publish messages to the "wikimedia-recentchange" topic.
+
+#### Consumer Configuration
+
+The consumer is configured to connect to the same Kafka broker and consume messages from the "wikimedia-recentchange" topic.
+
+### Running the Producer
+
+1. Navigate to the producer directory:
+   ```bash
+   cd producer
+   ```
+
+2. Start the producer application:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+3. The producer will start and expose an API endpoint at http://localhost:8081/api/v1/wikimedia. When you access this endpoint, it will start consuming the Wikimedia stream and publishing messages to Kafka.
+
+### Running the Consumer
+
+1. Navigate to the consumer directory:
+   ```bash
+   cd consumer
+   ```
+
+2. Start the consumer application:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+3. The consumer will automatically start consuming messages from the Kafka topic and store them in DynamoDB.
+
+### Monitoring
+
+You can monitor the Kafka topics, messages, and consumer groups using the Kafka UI at http://localhost:8080. This allows you to:
+
+- See the number of messages in each topic
+- View the message content
+- Monitor consumer group offsets
+- Check for any lag in message processing

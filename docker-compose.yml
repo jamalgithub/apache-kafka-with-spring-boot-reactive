@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: bitnami/zookeeper:3.9.3
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    hostname: myhost.zookeeper.com
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: yes
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 2
+    volumes:
+      - ./../persistance-data/zookeeper-data:/bitnami/zookeeper
+
+  kafka-broker-1:
+    image: bitnami/kafka:3.9.0
+    container_name: kafka-broker-1
+    ports:
+      - 9192:9092
+      - 9193:9193
+    hostname: myhost.kafka-broker-1.com
+    environment:
+      BITNAMI_DEBUG: yes
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_NODE_ID: 1
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_LISTENERS: INTERNAL://:9192,EXTERNAL://:9193
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka-broker-1:9192,EXTERNAL://localhost:9193
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    depends_on:
+      - zookeeper
+    volumes:
+    - ./../persistance-data/kafka-broker-1-data:/bitnami/kafka
+
+  kafka-broker-2:
+    image: bitnami/kafka:3.9.0
+    container_name: kafka-broker-2
+    ports:
+      - 9292:9092
+      - 9293:9293
+    hostname: myhost.kafka-broker-2.com
+    environment:
+      BITNAMI_DEBUG: yes
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_BROKER_ID: 2
+      KAFKA_CFG_NODE_ID: 2
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_LISTENERS: INTERNAL://:9292,EXTERNAL://:9293
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka-broker-2:9292,EXTERNAL://localhost:9293
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    depends_on:
+      - zookeeper
+    volumes:
+    - ./../persistance-data/kafka-broker-2-data:/bitnami/kafka
+
+  kafka-broker-3:
+    image: bitnami/kafka:3.9.0
+    container_name: kafka-broker-3
+    ports:
+      - 9392:9092
+      - 9393:9393
+    hostname: myhost.kafka-broker-3.com
+    environment:
+      BITNAMI_DEBUG: yes
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_BROKER_ID: 3
+      KAFKA_CFG_NODE_ID: 3
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_LISTENERS: INTERNAL://:9392,EXTERNAL://:9393
+      KAFKA_CFG_ADVERTISED_LISTENERS: INTERNAL://kafka-broker-3:9392,EXTERNAL://localhost:9393
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+    depends_on:
+      - zookeeper
+    volumes:
+    - ./../persistance-data/kafka-broker-3-data:/bitnami/kafka
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    ports:
+      - 8080:8080
+    hostname: myhost.kafka-ui.com
+    environment:
+      KAFKA_CLUSTERS_0_NAME: kafka-cluster-1
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-broker-1:9192
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+      KAFKA_CLUSTERS_1_NAME: kafka-cluster-2
+      KAFKA_CLUSTERS_1_BOOTSTRAPSERVERS: kafka-broker-2:9292
+      KAFKA_CLUSTERS_1_ZOOKEEPER: zookeeper:2181
+      KAFKA_CLUSTERS_2_NAME: kafka-cluster-3
+      KAFKA_CLUSTERS_2_BOOTSTRAPSERVERS: kafka-broker-3:9392
+      KAFKA_CLUSTERS_2_ZOOKEEPER: zookeeper:2181
+      KAFKA_BROKERCONNECT: kafka-broker-1:9192,kafka-broker-2:9292,kafka-broker-3:9392
+    depends_on:
+      - zookeeper
+      - kafka-broker-1
+      - kafka-broker-2
+      - kafka-broker-3
